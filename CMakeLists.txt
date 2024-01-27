@@ -110,7 +110,32 @@ configure_file(
 if (SHAD_RUNTIME_SYSTEM STREQUAL "GMT")
   find_package(MPI REQUIRED)
   include_directories(${MPI_INCLUDE_PATH})
+
+  ####################################################
+  #######              HWLOC                  ########
+  ####################################################
+  include(FindPkgConfig REQUIRED)
+  pkg_check_modules(HWLOC REQUIRED IMPORTED_TARGET hwloc)
+  include_directories(PkgConfig::HWLOC)
+  link_libraries(PkgConfig::HWLOC)
+  ####################################################
+  ####################################################
+
+  ####################################################
+  ######                RSMI                   #######
+  ####################################################
+  set(ROCM_SMI_INCLUDE "${ROCM_ROOT}/include")
+  include_directories(${ROCM_SMI_INCLUDE})
+  link_libraries(${ROCM_SMI_LIB} ${ROCM_SMI_LIB1} ${ROCM_SMI_LIB2})
+  ####################################################
+  ####################################################
 endif()
+
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
 
 include_directories(${SHAD_MAIN_INCLUDE_DIR} ${SHAD_INCLUDE_DIR})
 
